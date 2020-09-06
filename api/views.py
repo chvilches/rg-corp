@@ -32,7 +32,7 @@ class ScraperAPI(View):
 
     def post(self, *args, **kwargs):
         # todo faltan validaciones
-        data = self.request.POST
+        data = json.loads(self.request.body.decode().replace("\'", "\""))
 
         scraper, created = Scraper.objects.get_or_create(
             currency=data['currency'],
