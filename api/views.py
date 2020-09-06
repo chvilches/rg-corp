@@ -1,8 +1,8 @@
 from django.db.models import Max, F
-from django.http import JsonResponse
+from django.http import JsonResponse, QueryDict
 from django.views.generic import View
 from .models import Scraper
-
+import json
 
 def currency_serializer(q):
     return {
@@ -31,10 +31,47 @@ class ScraperAPI(View):
         return JsonResponse(data)
 
     def post(self, *args, **kwargs):
-        pass
+        # todo faltan validaciones
+        data = self.request.POST
+
+        scraper, created = Scraper.objects.get_or_create(
+            currency=data['currency'],
+            frequency=data['frequency']
+        )
+
+        data = {
+            "id"        : scraper.id,
+            "created_at": scraper.create_at,
+            "currency"  : scraper.currency,
+            "frequency" : scraper.frequency
+        }
+
+        return JsonResponse(data)
 
     def put(self, *args, **kwargs):
-        pass
+        # todo faltan validaciones
+        data = json.loads(self.request.body.decode().replace("\'", "\""))
+
+        Scraper.objects.filter(
+            pk=int(data['id'])
+        ).update(
+            frequency=int(data['frequency'])
+        )
+
+        data = {
+            "msg": "Scraper updated"
+        }
+        return JsonResponse(data)
 
     def delete(self, *args, **kwargs):
-        pass
+        # todo faltan validaciones
+        data = json.loads(self.request.body.decode().replace("\'", "\""))
+
+        Scraper.objects.filter(
+            pk=int(data['id'])
+        ).delete()
+
+        data = {
+            "msg": "Scraper deleted"
+        }
+        return JsonResponse(data)
