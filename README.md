@@ -20,6 +20,11 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+## Run Tests
+```
+python manage.py test
+```
+
 ## API Endpoints (payload and response)
 
 ### `/api/scrapers/`
